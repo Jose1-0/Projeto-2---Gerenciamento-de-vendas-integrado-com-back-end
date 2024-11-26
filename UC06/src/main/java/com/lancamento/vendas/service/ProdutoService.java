@@ -31,7 +31,7 @@ public class ProdutoService {
 
     // Verificar se o estoque é suficiente
     public void verificarEstoqueSuficiente(Produto produto, int quantidadeVendida) throws Exception {
-        if (produto.getQuantidade() < quantidadeVendida) {
+        if (produto.getQuantidade() <= quantidadeVendida) {
             throw new Exception("Estoque insuficiente para o produto: " + produto.getNome());
         }
     }
