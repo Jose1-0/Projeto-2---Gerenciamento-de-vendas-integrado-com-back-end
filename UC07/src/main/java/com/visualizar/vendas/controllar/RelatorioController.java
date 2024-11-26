@@ -53,13 +53,11 @@ public class RelatorioController {
         }
     }
 
-    // Endpoint para gerar o gráfico de vendas mensais (gráfico de linha)
     @GetMapping("/grafico-vendas-mensais")
-    public void gerarGraficoVendasMensais(HttpServletResponse response,
-                                          @RequestParam List<Map<String, Object>> vendasMensais) throws IOException {
+    public void gerarGraficoVendasMensais(HttpServletResponse response) throws IOException {
         try {
-            // Chama o serviço para gerar o gráfico
-            ChartPanel grafico = graficoService.gerarGraficoVendas(vendasMensais);
+            // Chama o serviço para gerar o gráfico de vendas mensais
+            ChartPanel grafico = graficoService.gerarGraficoVendas();
             JFreeChart chart = grafico.getChart();
 
             // Cria a imagem do gráfico
@@ -75,11 +73,10 @@ public class RelatorioController {
 
     // Endpoint para gerar gráfico de barras (quantidade comprada vs. vendida)
     @GetMapping("/grafico-quantidades-compradas-vendidas")
-    public void gerarGraficoQuantidades(HttpServletResponse response,
-                                         @RequestParam List<Map<String, Object>> dadosMensais) throws IOException {
+    public void gerarGraficoQuantidades(HttpServletResponse response) throws IOException {
         try {
-            // Chama o serviço para gerar o gráfico de barras
-            ChartPanel grafico = graficoService.gerarGraficoBarras(dadosMensais);
+            // Chama o serviço para gerar o gráfico de barras (quantidade comprada vs. vendida)
+            ChartPanel grafico = graficoService.gerarGraficoBarras(null);  // Passar dados adequados se necessário
             JFreeChart chart = grafico.getChart();
 
             // Cria a imagem do gráfico
@@ -95,14 +92,16 @@ public class RelatorioController {
 
     // Endpoint para gerar gráfico comparativo de custo vs. venda
     @GetMapping("/grafico-custo-venda")
-    public void gerarGraficoCustoVenda(HttpServletResponse response,
-                                       @RequestParam List<Map<String, Object>> dadosMensais) throws IOException {
+    public void gerarGraficoCustoVenda(HttpServletResponse response) throws IOException {
         try {
-            ChartPanel grafico = graficoService.gerarGraficoComparativoCustoVenda(dadosMensais);
+            // Chama o serviço para gerar o gráfico comparativo de custo vs. venda
+            ChartPanel grafico = graficoService.gerarGraficoComparativoCustoVenda(null);  // Passar dados adequados se necessário
             JFreeChart chart = grafico.getChart();
 
+            // Cria a imagem do gráfico
             BufferedImage image = chart.createBufferedImage(800, 600);
 
+            // Configura o response para enviar o gráfico em formato PNG
             response.setContentType("image/png");
             javax.imageio.ImageIO.write(image, "PNG", response.getOutputStream());
         } catch (Exception e) {
