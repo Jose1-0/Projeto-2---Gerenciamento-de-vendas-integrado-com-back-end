@@ -57,7 +57,6 @@ public class ProdutoService {
         produtoRepository.save(produto);
     }
 
-    // Método principal para realizar a venda
     public Venda realizarVenda(Venda venda) throws Exception {
         Produto produto = verificarProdutoExistente(venda.getProdutoId());
         verificarEstoqueSuficiente(produto, venda.getQuantidadeVendida());

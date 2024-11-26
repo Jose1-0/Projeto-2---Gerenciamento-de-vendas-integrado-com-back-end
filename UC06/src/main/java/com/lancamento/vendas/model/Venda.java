@@ -2,18 +2,30 @@ package com.lancamento.vendas.model;
 
 import java.util.Date;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
 public class Venda {
 
-	@Id
-	private Long id;
-	private Long produtoId;
-	private int quantidadeVendida;
-	private double valorTotalVenda;
-	private Date dataHoraVenda;
+    @Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "produto_id")  // Mapeando a coluna produto_id para a propriedade produtoId
+    private Long produtoId;
+
+    @Column(name = "quantidade_vendida")  // Mapeando a coluna quantidade_vendida para a propriedade quantidadeVendida
+    private int quantidadeVendida;
+
+    @Column(name = "valor_total_venda")  // Mapeando a coluna valor_total_venda para a propriedade valorTotalVenda
+    private double valorTotalVenda;
+
+    @Column(name = "data_hora_venda")  // Mapeando a coluna data_hora_venda para a propriedade dataHoraVenda
+    private Date dataHoraVenda;
 
 	public Long getId() {
 		return id;
