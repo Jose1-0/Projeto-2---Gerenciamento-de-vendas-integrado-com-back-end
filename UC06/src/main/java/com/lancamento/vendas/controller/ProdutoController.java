@@ -1,10 +1,20 @@
 package com.lancamento.vendas.controller;
 
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.lancamento.vendas.model.Produto;
 import com.lancamento.vendas.model.Venda;
 import com.lancamento.vendas.service.ProdutoService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import com.lancamento.vendas.service.VendaService;
 
 @RestController
 @RequestMapping("/api/vendas")
@@ -12,6 +22,28 @@ public class ProdutoController {
 
     @Autowired
     private ProdutoService produtoService;
+    
+    @Autowired
+    private VendaService vendaService;
+
+    
+    @GetMapping("/quantidades-mensais")
+    public List<Map<String, Object>> obterQuantidadesMensais() {
+        try {
+            return vendaService.calcularQuantidadesMensais();
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao obter quantidades mensais: " + e.getMessage());
+        }
+    }
+    
+    @GetMapping("/vendas-mensais")
+    public List<Map<String, Object>> obterVendasMensais() {
+        try {
+            return vendaService.calcularVendasMensais();
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao obter vendas mensais: " + e.getMessage());
+        }
+    }
 
     // Endpoint para verificar se o produto existe
     @GetMapping("/verificar-produto/{produtoId}")
