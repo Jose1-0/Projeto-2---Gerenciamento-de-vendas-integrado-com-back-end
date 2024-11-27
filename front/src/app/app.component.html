@@ -1,0 +1,23 @@
+<ion-app>
+  <!-- Menu Hambúrguer -->
+  <ion-menu side="start" menuId="main-menu" contentId="content">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Menu</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-list>
+        <ion-item routerLink="/lancamento-vendas" routerDirection="root">
+          Lançamento de Vendas
+        </ion-item>
+        <ion-item routerLink="/visualizacao-vendas" routerDirection="root">
+          Visualização de Vendas
+        </ion-item>
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+
+  <!-- Conteúdo Principal -->
+  <ion-router-outlet id="content"></ion-router-outlet>
+</ion-app>
