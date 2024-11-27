@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Gestão de Vendas e Gráficos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Criar Venda</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <form (submit)="realizarVenda()">
+        <ion-item>
+          <ion-label>ID do Produto</ion-label>
+          <ion-input type="number" [(ngModel)]="venda.produtoId" name="produtoId" required></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Quantidade Vendida</ion-label>
+          <ion-input type="number" [(ngModel)]="venda.quantidadeVendida" name="quantidadeVendida" required></ion-input>
+        </ion-item>
+        <ion-button expand="full" type="submit">Realizar Venda</ion-button>
+      </form>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Botões para gerar gráficos -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Gerar Gráficos</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-button (click)="gerarGraficoLinhas()">Gráfico de Linhas</ion-button>
+      <ion-button (click)="gerarGraficoBarras()">Gráfico de Barras</ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Exibição do gráfico -->
+  <ion-card *ngIf="grafico">
+    <ion-card-header>
+      <ion-card-title>Gráfico Gerado</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <img [src]="grafico" alt="Gráfico Gerado" />
+    </ion-card-content>
+  </ion-card>
+</ion-content>
