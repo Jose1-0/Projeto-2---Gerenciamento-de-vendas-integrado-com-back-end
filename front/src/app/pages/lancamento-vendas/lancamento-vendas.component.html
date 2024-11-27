@@ -33,6 +33,9 @@
             <p>Quantidade: {{ item.quantidade }}</p>
             <p>Subtotal: R$ {{ item.subtotal | number: '1.2-2' }}</p>
           </ion-label>
+          <ion-button slot="end" color="danger" (click)="removerDoCarrinho(item.id)">
+            Remover
+          </ion-button>
         </ion-item>
       </ion-list>
       <ion-item>

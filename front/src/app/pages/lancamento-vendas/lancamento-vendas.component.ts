@@ -11,7 +11,7 @@ export class LancamentoVendasComponent implements OnInit {
   carrinho: any[] = []; // Itens no carrinho
   total: number = 0; // Total da venda
 
-  constructor(private vendasService: LancamentoVendasService) {}
+  constructor(private vendasService: LancamentoVendasService) { }
 
   ngOnInit() {
     this.carregarProdutos();
@@ -64,5 +64,14 @@ export class LancamentoVendasComponent implements OnInit {
       this.carrinho = [];
       this.total = 0;
     });
+  }
+
+  // Remove um produto do carrinho
+  removerDoCarrinho(produtoId: number) {
+    const index = this.carrinho.findIndex((item) => item.id === produtoId);
+    if (index !== -1) {
+      this.carrinho.splice(index, 1); // Remove o item do array
+      this.calcularTotal(); // Recalcula o total após a remoção
+    }
   }
 }
