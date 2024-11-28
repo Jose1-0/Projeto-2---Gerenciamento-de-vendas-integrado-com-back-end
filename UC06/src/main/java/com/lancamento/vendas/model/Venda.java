@@ -1,69 +1,86 @@
 package com.lancamento.vendas.model;
 
 import java.util.Date;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Venda {
 
+
     @Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "produto_id")  // Mapeando a coluna produto_id para a propriedade produtoId
+    @Column(name = "produto_id")
     private Long produtoId;
 
-    @Column(name = "quantidade_vendida")  // Mapeando a coluna quantidade_vendida para a propriedade quantidadeVendida
+    @Column(name = "quantidade_vendida")
     private int quantidadeVendida;
 
-    @Column(name = "valor_total_venda")  // Mapeando a coluna valor_total_venda para a propriedade valorTotalVenda
+    @Column(name = "valor_total_venda")
     private double valorTotalVenda;
 
-    @Column(name = "data_hora_venda")  // Mapeando a coluna data_hora_venda para a propriedade dataHoraVenda
+    @Column(name = "data_hora_venda")
     private Date dataHoraVenda;
 
-	public Long getId() {
-		return id;
-	}
+    @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemVenda> itens;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    // Getters e Setters
+    public Long getId() {
+        return id;
+    }
 
-	public Long getProdutoId() {
-		return produtoId;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setProdutoId(Long produtoId) {
-		this.produtoId = produtoId;
-	}
+    public Long getProdutoId() {
+        return produtoId;
+    }
 
-	public int getQuantidadeVendida() {
-		return quantidadeVendida;
-	}
+    public void setProdutoId(Long produtoId) {
+        this.produtoId = produtoId;
+    }
 
-	public void setQuantidadeVendida(int quantidadeVendida) {
-		this.quantidadeVendida = quantidadeVendida;
-	}
+    public int getQuantidadeVendida() {
+        return quantidadeVendida;
+    }
 
-	public double getValorTotalVenda() {
-		return valorTotalVenda;
-	}
+    public void setQuantidadeVendida(int quantidadeVendida) {
+        this.quantidadeVendida = quantidadeVendida;
+    }
 
-	public void setValorTotalVenda(double valorTotalVenda) {
-		this.valorTotalVenda = valorTotalVenda;
-	}
+    public double getValorTotalVenda() {
+        return valorTotalVenda;
+    }
 
-	public Date getDataHoraVenda() {
-		return dataHoraVenda;
-	}
+    public void setValorTotalVenda(double valorTotalVenda) {
+        this.valorTotalVenda = valorTotalVenda;
+    }
 
-	public void setDataHoraVenda(Date dataHoraVenda) {
-		this.dataHoraVenda = dataHoraVenda;
-	}
+    public Date getDataHoraVenda() {
+        return dataHoraVenda;
+    }
+
+    public void setDataHoraVenda(Date dataHoraVenda) {
+        this.dataHoraVenda = dataHoraVenda;
+    }
+
+    public List<ItemVenda> getItens() {
+        return itens;
+    }
+
+    public void setItens(List<ItemVenda> itens) {
+        this.itens = itens;
+    }
 }
