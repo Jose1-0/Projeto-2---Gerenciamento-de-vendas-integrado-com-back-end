@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Lançamento de Vendas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<div class="lancamento-vendas-container">
+  <h1>Lançamento de Vendas</h1>
+
+  <!-- Seleção de Produtos -->
+  <div class="produtos-container">
+    <h2>Seleção de Produtos</h2>
+    <div *ngIf="produtos.length > 0; else loading">
+      <ul>
+        <li *ngFor="let produto of produtos">
+          {{ produto.nome }} - R$ {{ produto.preco }}
+          <button (click)="adicionarAoCarrinho(produto)">Adicionar</button>
+        </li>
+      </ul>
+    </div>
+    <ng-template #loading>
+      <p>Carregando produtos...</p>
+    </ng-template>
+  </div>
+
+  <!-- Carrinho de Compras -->
+  <div class="carrinho-container">
+    <h2>Carrinho de Compras</h2>
+    <ul>
+      <li *ngFor="let item of carrinho">
+        {{ item.nome }} - {{ item.quantidade }} x R$ {{ item.preco }} = R$ {{ item.subtotal }}
+        <button (click)="removerDoCarrinho(item.id)">Remover</button>
+      </li>
+    </ul>
+    <p>Total: R$ {{ total }}</p>
+    <button (click)="finalizarVenda()" [disabled]="carrinho.length === 0">
+      Finalizar Venda
+    </button>
+  </div>
+
+  <!-- Histórico de Vendas -->
+  <div *ngIf="vendas.length > 0" class="vendas-list">
+    <h2>Vendas Lançadas</h2>
+    <ul>
+      <li *ngFor="let venda of vendas">
+        {{ venda.produto }} - {{ venda.quantidade }} unidades - R$ {{ venda.valor }} em {{ venda.data }}
+      </li>
+    </ul>
+  </div>
+</div>

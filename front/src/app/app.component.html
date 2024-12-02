@@ -1,4 +1,16 @@
-<ion-app>
-  <app-menu></app-menu>
-  <ion-router-outlet id="main-content"></ion-router-outlet>
-</ion-app>
+<ion-menu content-id="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Menu</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <ion-list>
+      <ion-item routerLink="/comunicacao">Comunicação</ion-item>
+      <ion-item routerLink="/lancamento-vendas">Lançamento de Vendas</ion-item>
+      <ion-item routerLink="/visualizacao-vendas">Visualização de Vendas</ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+<ion-router-outlet id="main-content"></ion-router-outlet>

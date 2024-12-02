@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Visualização de Vendas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Detalhes das Vendas</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let venda of vendas">
+          <ion-label>
+            <h2>{{ venda.produto }}</h2>
+            <p>Quantidade: {{ venda.quantidade }}</p>
+            <p>Valor: R$ {{ venda.valor | number: '1.2-2' }}</p>
+            <p>Data: {{ venda.data | date: 'shortDate' }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <div class="grafico-container">
+    <h3>Gráfico de Linhas: Valor Mensal</h3>
+    <canvas id="graficoLinhas"></canvas>
+  </div>
+
+  <div class="grafico-container">
+    <h3>Gráfico de Barras: Quantidades Mensais</h3>
+    <canvas id="graficoBarras"></canvas>
+  </div>
+</ion-content>
