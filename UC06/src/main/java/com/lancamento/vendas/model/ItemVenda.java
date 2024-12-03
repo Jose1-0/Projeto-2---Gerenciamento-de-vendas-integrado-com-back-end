@@ -9,75 +9,90 @@ import jakarta.persistence.ManyToOne;
 
 @Entity
 public class ItemVenda {
-	
-	 @Id
-	    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	    private Long id;
 
-	    private Long produtoId;
-	    private String nomeProduto;
-	    private double precoVenda;
-	    private int quantidade;
-	    private double totalItem;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	    @ManyToOne
-	    @JoinColumn(name = "venda_id", nullable = false)
-	    private Venda venda;
+    private Long produtoId;
+    private String nomeProduto;
+    private double precoVenda;
+    private int quantidade;
+    private double totalItem;
+    
+    // Relacionamento ManyToOne com Produto
+    @ManyToOne
+    @JoinColumn(name = "produto_id")  // O campo "produto_id" na tabela do banco de dados
+    private Produto produto;  // Agora, você referencia diretamente o objeto Produto
 
-	    // Getters e Setters
-	    public Long getId() {
-	        return id;
-	    }
+    @ManyToOne
+    @JoinColumn(name = "venda_id", nullable = false)
+    private Venda venda;
 
-	    public void setId(Long id) {
-	        this.id = id;
-	    }
+    // Getters e Setters
 
-	    public Long getProdutoId() {
-	        return produtoId;
-	    }
+    public Long getId() {
+        return id;
+    }
 
-	    public void setProdutoId(Long produtoId) {
-	        this.produtoId = produtoId;
-	    }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	    public String getNomeProduto() {
-	        return nomeProduto;
-	    }
+    // Método para acessar o produto associado
+    public Produto getProduto() {
+        return produto;
+    }
 
-	    public void setNomeProduto(String nomeProduto) {
-	        this.nomeProduto = nomeProduto;
-	    }
+    // Método para configurar o produto associado
+    public void setProduto(Produto produto) {
+        this.produto = produto;
+    }
 
-	    public double getPrecoVenda() {
-	        return precoVenda;
-	    }
+    public String getNomeProduto() {
+        return nomeProduto;
+    }
+    
+ // Método para acessar o produtoId
+    public Long getProdutoId() {
+        return produto != null ? produto.getId() : null;  // Retorna o ID do produto, se o produto não for nulo
+    }
 
-	    public void setPrecoVenda(double precoVenda) {
-	        this.precoVenda = precoVenda;
-	    }
+    // Método setNomeProduto
+    public void setNomeProduto(String nomeProduto) {
+        this.nomeProduto = nomeProduto;
+    }
 
-	    public int getQuantidade() {
-	        return quantidade;
-	    }
+    public double getPrecoVenda() {
+        return precoVenda;
+    }
 
-	    public void setQuantidade(int quantidade) {
-	        this.quantidade = quantidade;
-	    }
+    public void setPrecoVenda(double precoVenda) {
+        this.precoVenda = precoVenda;
+    }
 
-	    public double getTotalItem() {
-	        return totalItem;
-	    }
+    public int getQuantidade() {
+        return quantidade;
+    }
 
-	    public void setTotalItem(double totalItem) {
-	        this.totalItem = totalItem;
-	    }
+    public void setQuantidade(int quantidade) {
+        this.quantidade = quantidade;
+    }
 
-	    public Venda getVenda() {
-	        return venda;
-	    }
+    public double getTotalItem() {
+        return totalItem;
+    }
 
-	    public void setVenda(Venda venda) {
-	        this.venda = venda;
-	    }
+    // Método setTotalItem
+    public void setTotalItem(double totalItem) {
+        this.totalItem = totalItem;
+    }
+
+    public Venda getVenda() {
+        return venda;
+    }
+
+    public void setVenda(Venda venda) {
+        this.venda = venda;
+    }
 }

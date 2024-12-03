@@ -52,7 +52,7 @@ public class Venda {
         this.produtoId = produtoId;
     }
 
-    public int getQuantidadeVendida() {
+    public Integer getQuantidadeVendida() {
         return quantidadeVendida;
     }
 

@@ -1,8 +1,11 @@
 package com.lancamento.vendas.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,27 +34,41 @@ public class ProdutoController {
     private VendaService vendaService;
     
     @Autowired
-    VendaRepository vendaRepository;
+    private VendaRepository vendaRepository;
     
     @Autowired
-    ProdutoRepository produtoRepository;
-    
-    
+    private ProdutoRepository produtoRepository;
+
+    // Endpoint para listar todos os produtos
     @GetMapping("/listar")
     public List<Produto> listarProdutos() {
         return produtoService.listarTodos();
     }
 
-    
+    // Endpoint para obter quantidades mensais de vendas
     @GetMapping("/quantidades-mensais")
     public List<Map<String, Object>> obterQuantidadesMensais() {
         try {
-            return vendaService.calcularQuantidadesMensais();
+            List<Map<String, Object>> quantidadesMensais = vendaService.calcularQuantidadesMensais();
+
+            // Verificar se alguma chave é null e filtrar ou corrigir isso
+            if (quantidadesMensais == null || quantidadesMensais.isEmpty()) {
+                throw new RuntimeException("Nenhum dado encontrado.");
+            }
+
+            // Corrigir valores null antes de retornar
+            quantidadesMensais = quantidadesMensais.stream()
+                .filter(item -> item.get("mes") != null)  // Supondo que a chave seja "mes" ou outra relevante
+                .collect(Collectors.toList());
+
+            return quantidadesMensais;
         } catch (Exception e) {
             throw new RuntimeException("Erro ao obter quantidades mensais: " + e.getMessage());
         }
     }
-    
+
+
+    // Endpoint para obter vendas mensais
     @GetMapping("/vendas-mensais")
     public List<Map<String, Object>> obterVendasMensais() {
         try {
@@ -60,7 +77,65 @@ public class ProdutoController {
             throw new RuntimeException("Erro ao obter vendas mensais: " + e.getMessage());
         }
     }
-    
+
+ // Novo endpoint para obter o relatório mensal para gráfico de linha
+    @GetMapping("/relatorio-mensal")
+    public ResponseEntity<Map<String, Map<String, Double>>> obterRelatorioMensal(@RequestBody Map<String, String> periodo) {
+        try {
+            String dataInicial = periodo.get("dataInicial");
+            String dataFinal = periodo.get("dataFinal");
+
+            // Converter strings para Date, assumindo que a data vem no formato "yyyy-MM-dd"
+            Date dataInicio = new SimpleDateFormat("yyyy-MM-dd").parse(dataInicial);
+            Date dataFim = new SimpleDateFormat("yyyy-MM-dd").parse(dataFinal);
+
+            // Buscar as vendas no intervalo de tempo
+            List<Venda> vendas = vendaRepository.findByDataHoraVendaBetween(dataInicio, dataFim);
+
+            // Agrupar as vendas por mês e calcular o total de vendas e o custo total
+            Map<String, Map<String, Double>> vendasMensais = vendas.stream()
+                .collect(Collectors.groupingBy(
+                    venda -> new SimpleDateFormat("yyyy-MM").format(venda.getDataHoraVenda()), 
+                    Collectors.collectingAndThen(
+                        Collectors.toList(), 
+                        listaDeVendas -> {
+                            double totalVenda = 0;
+                            double totalCusto = 0;
+
+                            // Para cada venda, calcular o totalVenda e o totalCusto
+                            for (Venda venda : listaDeVendas) {
+                                for (ItemVenda item : venda.getItens()) {
+                                    totalVenda += item.getTotalItem();
+                                    
+                                    // Corrigir o acesso ao produtoId, utilizando o objeto Produto
+                                    Produto produto = item.getProduto();  // acesso ao produto diretamente
+                                    if (produto != null) {
+                                        totalCusto += produto.getPrecoCusto() * item.getQuantidade();
+                                    }
+                                }
+                            }
+
+                            // Criar o mapa com o resumo dos totais
+                            Map<String, Double> resumo = new HashMap<>();
+                            resumo.put("totalVenda", totalVenda);
+                            resumo.put("totalCusto", totalCusto);
+                            return resumo;
+                        }
+                    )
+                ));
+
+            // Retornar o mapa com os totais por mês
+            return ResponseEntity.ok(vendasMensais);
+        } catch (Exception e) {
+            // Se ocorrer um erro, retornar um erro 500 com a mensagem de exceção
+            Map<String, Map<String, Double>> errorResponse = new HashMap<>();
+            Map<String, Double> errorMap = new HashMap<>();
+            errorMap.put("error", 1.0);  // ou qualquer outro valor que represente um erro
+            errorResponse.put("error", errorMap);
+            return ResponseEntity.status(500).body(errorResponse);
+        }
+    }
+
     
     @PostMapping("/realizar")
     public ResponseEntity<Map<String, Object>> realizarVenda(@RequestBody Venda venda) {
@@ -101,71 +176,12 @@ public class ProdutoController {
         ));
     }
 
-    // Endpoint para verificar se o produto existe
-//    @GetMapping("/verificar-produto/{produtoId}")
-//    public Produto verificarProdutoExistente(@PathVariable Long produtoId) {
-//        try {
-//            return produtoService.verificarProdutoExistente(produtoId);
-//        } catch (Exception e) {
-//            throw new RuntimeException("Erro ao verificar produto: " + e.getMessage());
-//        }
-//    }
-//
-//    // Endpoint para verificar se o estoque é suficiente
-//    @GetMapping("/verificar-estoque/{produtoId}/{quantidadeVendida}")
-//    public String verificarEstoqueSuficiente(@PathVariable Long produtoId, @PathVariable int quantidadeVendida) {
-//        try {
-//            Produto produto = produtoService.verificarProdutoExistente(produtoId);
-//            produtoService.verificarEstoqueSuficiente(produto, quantidadeVendida);
-//            return "Estoque suficiente para o produto: " + produto.getNome();
-//        } catch (Exception e) {
-//            return "Erro: " + e.getMessage();
-//        }
-//    }
-//
-//    // Endpoint para calcular o valor da venda
-//    @GetMapping("/calcular-valor-venda/{produtoId}/{quantidadeVendida}")
-//    public double calcularValorVenda(@PathVariable Long produtoId, @PathVariable int quantidadeVendida) {
-//        try {
-//            Produto produto = produtoService.verificarProdutoExistente(produtoId);
-//            return produtoService.calcularValorVenda(produto, quantidadeVendida);
-//        } catch (Exception e) {
-//            throw new RuntimeException("Erro ao calcular valor da venda: " + e.getMessage());
-//        }
-//    }
-//
-//    // Endpoint para criar a venda
-//    @PostMapping("/criar-venda")
-//    public Venda criarVenda(@RequestBody Venda venda) {
-//        try {
-//            Produto produto = produtoService.verificarProdutoExistente(venda.getProdutoId());
-//            double valorTotalVenda = produtoService.calcularValorVenda(produto, venda.getQuantidadeVendida());
-//            return produtoService.criarVenda(venda.getProdutoId(), venda.getQuantidadeVendida(), valorTotalVenda);
-//        } catch (Exception e) {
-//            throw new RuntimeException("Erro ao criar a venda: " + e.getMessage());
-//        }
-//    }
-//
-//    // Endpoint para atualizar o estoque
-//    @PostMapping("/atualizar-estoque")
-//    public String atualizarEstoque(@RequestBody Venda venda) {
-//        try {
-//            Produto produto = produtoService.verificarProdutoExistente(venda.getProdutoId());
-//            produtoService.atualizarEstoque(produto, venda.getQuantidadeVendida());
-//            return "Estoque atualizado com sucesso para o produto: " + produto.getNome();
-//        } catch (Exception e) {
-//            return "Erro ao atualizar o estoque: " + e.getMessage();
-//        }
-//    }
-//
-//    // Endpoint para realizar a venda completa
-//    @PostMapping("/realizar-venda")
-//    public Venda realizarVenda(@RequestBody Venda venda) {
-//        try {
-//            return produtoService.realizarVenda(venda);
-//        } catch (Exception e) {
-//            throw new RuntimeException("Erro ao realizar a venda: " + e.getMessage());
-//        }
-//    }
-}
 
+
+
+   
+
+
+
+
+}
